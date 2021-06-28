@@ -1,1 +1,1 @@
-This repository accompanies the paper "Recalibrating our confidence in measures of metacognition".
+This repository accompanies the paper "Recalibrating our confidence in metacognitive performance measures".
