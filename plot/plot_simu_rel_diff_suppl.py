@@ -118,7 +118,7 @@ for i, m in enumerate(('mratio_bounded_minus_logmratio', 'mratio_logistic_minus_
                     plt.yticks([-0.1, 0, 0.1, 0.2, 0.3])
                 else:
                     plt.yticks([-0.1, 0, 0.1, 0.2, 0.3], [])
-                plt.ylim((-0.12, 0.32))
+                plt.ylim((-0.07, 0.26))
         else:
             if i < 3:
                 if i == 0:
@@ -145,5 +145,5 @@ for i in (6, 8, 10):
 
 rcParams['text.usetex'] = False
 
-savefig(f'../img/{Path(__file__).stem}.png')
+savefig(f'../img/{Path(__file__).stem}.png', pad_inches=0.03)
 plt.show()

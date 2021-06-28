@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Author: Matthias Guggenmos <mg.corresponding@gmail.com>
+# 2021
+
+### Description
+# Plot utils
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl

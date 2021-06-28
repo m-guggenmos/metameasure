@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Author: Matthias Guggenmos <mg.corresponding@gmail.com>
+# 2021
+
+### Description
+# Simulation: type 1 performance dependency of Mratio based on hmeta-d'
+
 import os
 import sys
 from pathlib import Path

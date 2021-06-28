@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Author: Matthias Guggenmos <guggenmos.web@gmail.com>
-# 2020
+# Author: Matthias Guggenmos <mg.corresponding@gmail.com>
+# 2021
 
 ### Description
-# Simulation to assess the test-retest reliability of metacognitive performance measures under well-controlled settings.
-# Separate script specifically for Mratio based on hmeta-d'
+# Simulation: test-retest reliability of Mratio based on hmeta-d'
 
 import os
 import sys

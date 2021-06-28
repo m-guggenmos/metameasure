@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Author: Matthias Guggenmos <mg.corresponding@gmail.com>
+# 2021
+
+### Description
+# Simulation: type 1 performance dependency of ANDI
+
 import os
 import sys
 from multiprocessing_on_dill.pool import Pool

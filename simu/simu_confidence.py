@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Author: Matthias Guggenmos <mg.corresponding@gmail.com>
+# 2021
+
+### Description
+# Simulation: generative model
+
 from pathlib import Path
 from scipy.stats import beta, lognorm, norm
 

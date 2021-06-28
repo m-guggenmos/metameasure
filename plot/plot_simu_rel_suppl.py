@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Author: Matthias Guggenmos <mg.corresponding@gmail.com>
+# 2021
+
+### Description
+# Plot utils
+
 import os
 
 import matplotlib.pyplot as plt
