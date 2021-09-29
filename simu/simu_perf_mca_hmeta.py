@@ -3,7 +3,6 @@
 # Author: Matthias Guggenmos <mg.corresponding@gmail.com>
 # 2021
 
-### Description
 # Simulation: type 1 performance dependency of Mratio based on hmeta-d'
 
 import os
@@ -18,7 +17,6 @@ from simu_confidence import gen_data
 
 sys.path.append(os.path.join(os.path.dirname(__file__), os.path.pardir))
 from eval.type2SDT_hmeta import type2_SDT_MLE_group  # noqa
-
 
 
 np.random.seed(1)
@@ -69,7 +67,8 @@ for i, sigma_sens_id in enumerate(sigma_sens_ids):
         print(f'\tSigma meta {j + 1} / {len(sigma_meta_list)} [{sigma_meta:.3f}]')
         print(f'\tsigma_sens_id: {sigma_sens_id}')
 
-        stimulus, choices, correct, confidence, confidence_disc, nratings = gen_data(nsubjects, nsamples, sigmas_sens=sigma_sens, sigma_meta=sigma_meta, mu=mu, noise_model=noise_model)
+        stimulus, choices, correct, confidence, confidence_disc, nratings = \
+            gen_data(nsubjects, nsamples, sigmas_sens=sigma_sens, sigma_meta=sigma_meta, mu=mu, noise_model=noise_model)
 
         mratio_hmeta = np.array(type2_SDT_MLE_group(stimulus, choices, confidence_disc, nratings).M_ratio)[0]
 

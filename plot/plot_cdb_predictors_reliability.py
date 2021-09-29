@@ -20,13 +20,14 @@ z = z[~z.mratio.isna()]
 z['logmratio'] = np.log(np.maximum(0.1, z['mratio'].values))
 z['logmratio_test'] = np.log(np.maximum(0.1, z['mratio_test'].values))
 z['logmratio_retest'] = np.log(np.maximum(0.1, z['mratio_retest'].values))
-z = z[z.study_id.isin(np.where((z.groupby('study_id').nsamples.mean() >= 400).values)[0])]
+# z = z[z.study_id.isin(np.where((z.groupby('study_id').nsamples.mean() >= 400).values)[0])]
+z = z[z.study_id.isin(np.where((z.groupby('study_id').nsamples.mean() >= 400).values)[0]) & (z.d1 > 0.5)]
 
-
-mapping = dict(d1=r"$d'$", d1_fit=r"$d'$", perf=r"$Accuracy$", auc=r"$\mathit{AUROC2}}$", metad1=r"$\mathit{meta}$-$d'$", mratio=r"$M_{ratio}$",
-               mratio_con2=r"bounded $M_{ratio}$",
-               mratio_hmeta=r"hierarchical $M_{ratio}$", logmratio=r"$\log\, M_{ratio}$",
-               mdiff=r"$M_{diff}$")
+mapping = dict(
+    d1=r"$d'$", d1_fit=r"$d'$", perf=r"$Accuracy$", auc=r"$\mathit{AUROC2}}$", metad1=r"$\mathit{meta}$-$d'$",
+    mratio=r"$M_{ratio}$", mratio_hmeta=r"hierarchical $M_{ratio}$",
+    logmratio=r"$\log\, M_{ratio}$", mdiff=r"$M_{diff}$"
+)
 
 
 ps_mapping = dict(
@@ -38,7 +39,7 @@ ps_mapping = dict(
     any_feedback='feedback',
     online_staircase='staircase',
     conf_norm='confidence',
-    mratio='$M_{\mathrm{ratio}}$',
+    mratio=r'$M_{ratio}$',
     d1_orig="d'",
     d1="d'",
     metad1="meta-d'",
@@ -46,19 +47,22 @@ ps_mapping = dict(
 )
 
 zstudy = z.groupby('study_id').mean().reset_index()
-zstudy['study_name'] = [z[z.study_id == id].study_name.values[0] for id in zstudy.study_id.unique()]
+zstudy['study_name'] = [z[z.study_id == sid].study_name.values[0] for sid in zstudy.study_id.unique()]
 db = pd.read_excel('../data/Database_Information.xlsx')
-dbvars = ['nsubjects', 'min_trials_per_subject', 'nratings', 'continuous', 'conf_dec_simu', 'trial_feedback', 'block_feedback', 'online_staircase']
+dbvars = ['nsubjects', 'min_trials_per_subject', 'nratings', 'continuous', 'conf_dec_simu', 'trial_feedback',
+          'block_feedback', 'online_staircase']
 for name in sorted(zstudy.study_name.unique()):
     for var in dbvars:
         zstudy.loc[zstudy.study_name == name, var] = db.loc[db.Name_in_database == name, var].values[0]
         if var == 'nratings':
-            zstudy.loc[(zstudy.study_name == name), 'conf_norm'] = zstudy[zstudy.study_name == name].conf / zstudy[zstudy.study_name == name].nratings
+            zstudy.loc[(zstudy.study_name == name), 'conf_norm'] = zstudy[zstudy.study_name == name].conf / \
+                                                                   zstudy[zstudy.study_name == name].nratings
 zstudy['any_feedback'] = (zstudy['trial_feedback'] == 1) | (zstudy['block_feedback'] == 1)
 zstudy['entropy'] = zstudy['entropy'] / np.log(zstudy['nratings'])
 
 
-dbvars = ['nsubjects', 'min_trials_per_subject',  'nratings', 'continuous', 'conf_dec_simu', 'any_feedback', 'online_staircase']
+dbvars = ['nsubjects', 'min_trials_per_subject',  'nratings', 'continuous', 'conf_dec_simu', 'any_feedback',
+          'online_staircase']
 
 
 measure = 'mratio'
@@ -71,15 +75,18 @@ for i, modus in enumerate(('correlation', 'nmae')):
     axes[i] = plt.subplot(1, 2, i + 1)
 
     for k, study in enumerate(sorted(z.study_id.unique())):
-        test = z.loc[(z.study_id == study) & ~z[f'{measure}_test'].isna() & ~z[f'{measure}_retest'].isna(),  f'{measure}_test'].values
-        retest = z.loc[(z.study_id == study) & ~z[f'{measure}_test'].isna() & ~z[f'{measure}_retest'].isna(), f'{measure}_retest'].values
+        test = z.loc[(z.study_id == study) & ~z[f'{measure}_test'].isna() & ~z[f'{measure}_retest'].isna(),  f'{measure}_test'].values  # noqa
+        retest = z.loc[(z.study_id == study) & ~z[f'{measure}_test'].isna() & ~z[f'{measure}_retest'].isna(), f'{measure}_retest'].values  # noqa
         test_zb = test - min(test.min(), retest.min())
         retest_zb = retest - min(test.min(), retest.min())
         if (len(test) >= 10) and (len(retest) >= 10):
             if modus == 'correlation':
-                zstudy.loc[zstudy.study_id == study, f'{measure}_reliability'] = np.arctanh(regress(test, retest, method='bivariate', outlier_stds=4).r)
+                zstudy.loc[zstudy.study_id == study, f'{measure}_reliability'] = \
+                    np.arctanh(regress(test, retest, method='bivariate', outlier_stds=4).r)
             elif modus == 'nmae':
-                zstudy.loc[zstudy.study_id == study, f'{measure}_reliability'] = np.mean(np.abs(test_zb - retest_zb)) / (0.5*(np.mean(np.abs(test_zb - np.mean(retest_zb))) + np.mean(np.abs(retest_zb - np.mean(test_zb)))))
+                zstudy.loc[zstudy.study_id == study, f'{measure}_reliability'] = \
+                    np.mean(np.abs(test_zb - retest_zb)) / (0.5*(np.mean(np.abs(test_zb - np.mean(retest_zb))) +
+                                                                 np.mean(np.abs(retest_zb - np.mean(test_zb)))))
 
     ps = ['d1', 'conf_norm', 'mratio'] + dbvars
     model = linear_regression(
@@ -87,12 +94,14 @@ for i, modus in enumerate(('correlation', 'nmae')):
         patsy_string=f'{measure}_reliability ~ ' + ' + '.join(ps),
         model_blocks=False,
         ols=True,
-        ignore_warnings=True, reml=False, print_data=False, print_corr_table=False, return_model=True, standardize_vars_excl=['category_id']
+        ignore_warnings=True, reml=False, print_data=False, print_corr_table=False, return_model=True,
+        standardize_vars_excl=['category_id']
     )
 
-
-    plot_coefficients(model, zstudy[~zstudy[f'{measure}_reliability'].isna()], exclude_categorical=True, striped_background=True, asterisk_yshift=-0.015, asterisk_fontsize=9, circle_fontsize=11,
-                      circle_yshift=-0.13, mapping=ps_mapping, max_x_asterisks=0.95, stripe_color_dark=(0.15, 0.15, 0.15), show_trend=False)
+    plot_coefficients(model, zstudy[~zstudy[f'{measure}_reliability'].isna()], exclude_categorical=True,
+                      striped_background=True, asterisk_yshift=-0.015, asterisk_fontsize=9, circle_fontsize=11,
+                      circle_yshift=-0.0, mapping=ps_mapping, max_x_asterisks=0.95,
+                      stripe_color_dark=(0.15, 0.15, 0.15), show_trend=True)
 
     plt.text((-0.38, -0.34)[i], 1.01, 'AB'[i], transform=plt.gca().transAxes, color=(0, 0, 0), fontsize=19)
     plt.xlim((-1, 1))
@@ -102,10 +111,11 @@ for i, modus in enumerate(('correlation', 'nmae')):
     if i == 1:
         leg = plt.legend(loc='upper left', fontsize=11, bbox_to_anchor=(1.02, 0.7))
 
-    axes[i].xaxis.set_major_formatter(StrMethodFormatter("{x}"))
+    axes[i].xaxis.set_major_formatter(StrMethodFormatter("{x}"))  # noqa
 
 set_fontsize(label=12, xtick=11, ytick=11, title=15)
 
 plt.tight_layout()
 plt.subplots_adjust(hspace=0.14, wspace=0.4)
 savefig(f'../img/{Path(__file__).stem}.png')
+plt.show()

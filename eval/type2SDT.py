@@ -3,6 +3,9 @@ from scipy.stats import norm
 from scipy.optimize import minimize
 import warnings
 
+# Python translation from Brian Maniscalco's code at http://www.columbia.edu/~bsm2105/type2sdt/
+# Matthias Guggenmos, 2021
+
 
 def fit_meta_d_MLE(nR_S1, nR_S2, s=1, fncdf=None, fninv=None):
     # fit = fit_meta_d_MLE(nR_S1, nR_S2, s, fncdf, fninv)
@@ -525,3 +528,15 @@ def type2roc_disc(correct, conf, nRatings=5):
 
 def type2roc_disc2(stim, response, conf, nRatings=5):
     return type2roc_disc((np.array(stim) == np.array(response)).astype(int), conf, nRatings=nRatings)
+
+
+if __name__ == '__main__':
+    nsamples = 10000
+    stimulus = np.random.randint(0, 2, nsamples)
+    choices = np.random.randint(0, 2, nsamples)
+    rand_ind = np.random.permutation(range(nsamples))[:int(nsamples/2)]
+    choices[rand_ind] = stimulus[rand_ind]
+    confidence = 1 * np.ones(nsamples)
+    print(type2_SDT_MLE(stimulus, choices, confidence, 5).M_ratio)
+    from confidence.mca.type2_SDT_MLE_matlab import type2_SDT_MLE_matlab
+    print(type2_SDT_MLE_matlab(stimulus, choices, confidence, 5).M_ratio)

@@ -3,9 +3,6 @@
 # Author: Matthias Guggenmos <mg.corresponding@gmail.com>
 # 2021
 
-### Description
-# Plot utils
-
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -28,15 +25,11 @@ def savefig(path, relative_to_home=False, bbox_inches='tight', pad_inches=0, dpi
     plt.savefig(path, bbox_inches=bbox_inches, pad_inches=pad_inches, dpi=dpi, **kwargs)
 
 
-def set_fontsize(label=None, xlabel=None, ylabel=None,
-        tick=None, xtick=None, ytick=None,
-        title=None,
-        set=None
-        ):
+def set_fontsize(label=None, xlabel=None, ylabel=None, tick=None, xtick=None, ytick=None, title=None, scheme=None):
 
     fig = plt.gcf()
 
-    if set == 'default':
+    if scheme == 'default':
         label = 14
         tick = 12
         title = 16
@@ -66,4 +59,3 @@ def set_fontsize(label=None, xlabel=None, ylabel=None,
 
         if title is not None:
             ax.title.set_fontsize(title)
-

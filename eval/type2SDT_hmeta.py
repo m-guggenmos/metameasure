@@ -3,6 +3,9 @@ eng = matlab.engine.start_matlab()
 import numpy as np
 from collections import namedtuple
 
+# Python API for Steve Fleming's hmeta-d' (https://github.com/metacoglab/HMeta-d)
+# Matthias Guggenmos, 2021
+
 
 def type2_SDT_MLE_group(stimID, response, rating, nRatings, cellpadding=0):
     # out = type2_SDT(input)
@@ -114,7 +117,8 @@ def type2_SDT_MLE_group(stimID, response, rating, nRatings, cellpadding=0):
 
 
 
-def type2_SDT_MLE_groupCorr(stimID_task1, response_task1, rating_task1, stimID_task2, response_task2, rating_task2, nRatings, cellpadding=0, repeated=False):
+def type2_SDT_MLE_groupCorr(stimID_task1, response_task1, rating_task1, stimID_task2, response_task2, rating_task2,
+                            nRatings, cellpadding=0):
     # out = type2_SDT(input)
     #
     # Given data from an experiment where an observer discriminates between two
