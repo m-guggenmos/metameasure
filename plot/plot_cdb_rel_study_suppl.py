@@ -38,7 +38,7 @@ for i in range(1, len(nsamples_list)):
 
 nresample = 1000
 
-reload = False
+reload = True
 
 color_r = (0, 0.2, 0.6)
 color_nmae = (0, 1/3, 0)
